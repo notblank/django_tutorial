@@ -1,5 +1,11 @@
 <htlm>  
     <body>
-        <h1>hello, {{ name }}</h1>
+        <h1>hello, {{ name }}  </h1>
+        <ul>
+            {% for r in results %}
+            <li> {{ r.customer__first_name }} {{ r.total_orders }} </li>
+            {% endfor %}
+        </ul>
+
     </body>
 </htlm>

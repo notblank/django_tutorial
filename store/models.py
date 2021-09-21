@@ -11,7 +11,14 @@ class Collection(models.Model):
             null=True, 
             #Dont want to get reverse rel to clash with collection in Product
             related_name='+') 
-# Create your models here.
+    # Overwrite to show titles in admin site:
+    def __str__(self) -> str:
+        return self.title
+
+    # To sort collections by title in admin site:
+    class Meta:
+        ordering = ['title']
+
 class Product(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
@@ -21,6 +28,12 @@ class Product(models.Model):
     last_update = models.DateTimeField(auto_now=True)
     collection = models.ForeignKey(Collection, on_delete=models.PROTECT)
     promotions = models.ManyToManyField(Promotion)
+
+    # Admin site config:
+    def __str__(self) -> str:
+        return self.title
+    class Meta:
+        ordering = ['title']
 
 class Customer(models.Model):
     first_name = models.CharField(max_length=255)
@@ -41,6 +54,11 @@ class Customer(models.Model):
     membership = models.CharField(max_length=1, 
             choices=MEM_CHOICES, default=MEM_BRONZE)
    
+    def __str__(self) -> str:
+        return f'{self.first_name} {self.last_name}'
+
+    class Meta:
+        ordering = ['last_name', 'first_name']
 
 class Order(models.Model):
     placed_at = models.DateTimeField(auto_now_add=True)
@@ -56,6 +74,9 @@ class Order(models.Model):
     payment_status = models.CharField(max_length=1, 
             choices=P_STAT_CHOICES, default=P_STAT_PEND)
     customer=models.ForeignKey(Customer, on_delete=models.PROTECT)
+
+    def __str__(self) -> str:
+        return self.placed_at
 
     
 class Address(models.Model):
